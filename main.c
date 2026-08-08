@@ -93,10 +93,10 @@ void render(tetris_engine_t *engine) {
   // ugly flickering)
   printf("\033[H");
 
-  printf(" Score: %d   Lines: %d\n", engine->score, engine->lines_cleared);
+  printf("  Score: %d   Lines: %d\n", engine->score, engine->lines_cleared);
 
   for (int8_t row = 0; row < TETRIS_ROWS; row++) {
-    printf("|"); // Left wall
+    printf(" |"); // Left wall
 
     for (int8_t col = 0; col < TETRIS_COLS; col++) {
 
@@ -130,7 +130,7 @@ void render(tetris_engine_t *engine) {
   }
 
   // Draw the floor
-  printf(" ");
+  printf("  ");
   for (int8_t col = 0; col < TETRIS_COLS; col++) {
     printf("--");
   }
