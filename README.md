@@ -31,3 +31,6 @@ gcc tetris.c pc-port.c -o spacetetris
 gcc tetris.c pc-port.c -o spacetetris.exe
 spacetetris.exe
 ```
+
+---
+*made with logic, coffee, and many sleepless nights*
