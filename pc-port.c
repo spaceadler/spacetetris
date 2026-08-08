@@ -157,7 +157,6 @@ char get_raw_keypress() {
 
 #else
   // FLIPPER ZERO / EMBEDDED
-  // not yet
   return '\0';
 #endif
 }
