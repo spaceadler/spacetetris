@@ -92,4 +92,4 @@ spacetetris.exe
 ```
 
 ---
-*made with logic, coffee, and many sleepless nights*
+*powered by logic, coffee, and many sleepless nights*
