@@ -1,4 +1,5 @@
 #include "tetris.h"
+
 #ifdef _WIN32
 #include <conio.h>
 #elif defined(__linux__)
@@ -12,21 +13,34 @@ int main() {
   tetris_engine_t engine;
   init(&engine);
 
-  int8_t exit = 0;
-  while (exit != 1) {
+  while (1) {
     char key = get_raw_keypress();
 
-    // 2. The Architect's Traffic Director:
+    // Handle input based on current state
     if (engine.current_state == block_fall && key != '\0') {
       input(&engine, key);
+    } else if (engine.current_state == game_over && key != '\0') {
+      // Non-blocking game-over input
+      if (key == 'y' || key == 'Y') {
+        init(&engine);
+        engine.current_state = game_start;
+      } else if (key == 'n' || key == 'N') {
+        break;
+      }
     }
 
     if (state_machine(&engine) == 1) {
-      exit = 1;
+      break;
     }
-    render(&engine);
+
+    // Only render the board during active gameplay
+    if (engine.current_state != menu) {
+      render(&engine);
+    }
+
     delay_ms(FRAME_DELAY_MS);
   }
+
   return 0;
 }
 
@@ -65,7 +79,7 @@ void input(tetris_engine_t *engine, char button_pressed) {
     return; // Ignore invalid keys
   }
 
-  // 3. Fire the radar! If the coast is clear, commit the move.
+  // Fire the radar! If the coast is clear, commit the move.
   if (physics_get(engine, test_x, test_y, test_rot) == 0) {
     engine->active_piece.x = test_x;
     engine->active_piece.y = test_y;
@@ -77,8 +91,7 @@ void render(tetris_engine_t *engine) {
   // ANSI escape code: Moves cursor to the top-left of the terminal.
   // This overwrites the old frame instead of clearing the screen (which causes
   // ugly flickering)
-  printf("\033[H"); // On the very first frame, clear screen. After that,
-                    // just use "\033[H"
+  printf("\033[H");
 
   printf(" Score: %d   Lines: %d\n", engine->score, engine->lines_cleared);
 
@@ -88,7 +101,7 @@ void render(tetris_engine_t *engine) {
     for (int8_t col = 0; col < TETRIS_COLS; col++) {
 
       // 1. Check if the falling piece is currently occupying this specific x/y
-      // pixel
+      //    pixel
       int8_t is_active_block = 0;
       if (engine->current_state == block_fall ||
           engine->current_state == wait) {
@@ -122,6 +135,18 @@ void render(tetris_engine_t *engine) {
     printf("--");
   }
   printf("\n");
+
+  // Game over overlay (non-blocking — input is handled in main loop)
+  if (engine->current_state == game_over) {
+    printf("\n  === GAME OVER ===\n");
+    printf("  Final Score: %d\n", engine->score);
+    printf("  Lines Cleared: %d\n", engine->lines_cleared);
+    printf("\n  Play again? (y/n): ");
+  }
+
+  // Wipe any leftover text below the current frame
+  printf("\033[J");
+  fflush(stdout);
 }
 
 char get_raw_keypress() {

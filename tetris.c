@@ -55,6 +55,8 @@ void init(tetris_engine_t *engine) {
   engine->active_piece.y = 0;
   engine->active_piece.rotation = 0;
   engine->bag_index = 0;
+  engine->gravity_counter = 0;
+  engine->wait_counter = 0;
 }
 
 int8_t state_machine(tetris_engine_t *engine) {
@@ -67,19 +69,28 @@ int8_t state_machine(tetris_engine_t *engine) {
     break;
 
   case game_start:
+    // Clear the screen once so menu text doesn't ghost behind the board
+    printf("\033[2J\033[H");
     // Shuffle bag, spawn first piece, switch to block_fall
     shuffle_bag(engine);
     spawn_piece(engine);
+    engine->gravity_counter = 0;
     engine->current_state = block_fall;
     break;
 
   case block_fall:
-    // GRAVITY HAPPENS HERE
-    if (physics_get(engine, engine->active_piece.x, engine->active_piece.y + 1,
-                    engine->active_piece.rotation) == 0) {
-      engine->active_piece.y++;
-    } else {
-      engine->current_state = block_stop;
+    // GRAVITY HAPPENS HERE, but only every GRAVITY_FRAMES frames,
+    // not every single frame (which would be instant).
+    engine->gravity_counter++;
+    if (engine->gravity_counter >= GRAVITY_FRAMES) {
+      engine->gravity_counter = 0;
+      if (physics_get(engine, engine->active_piece.x,
+                      engine->active_piece.y + 1,
+                      engine->active_piece.rotation) == 0) {
+        engine->active_piece.y++;
+      } else {
+        engine->current_state = block_stop;
+      }
     }
     break;
 
@@ -91,48 +102,59 @@ int8_t state_machine(tetris_engine_t *engine) {
     break;
 
   case line_check:
-    // Scan rows 0 to 19. If a row is full, clear it and drop everything above
-    // it. After checking, call spawn_piece() and switch back to block_fall. (If
-    // spawn_piece() detects a block already at top, switch to game_over).
+    // Scan rows. If a row is full, clear it and drop everything above it.
+    // After checking, set up the lock delay before spawning the next piece.
     if (line_checker(engine) == 1) {
       engine->current_state = game_over;
     } else {
+      engine->wait_counter = LOCK_DELAY_FRAMES;
       engine->current_state = wait;
     }
     break;
 
   case wait:
-    delay_ms(1000);
-    engine->current_state = block_fall;
+    // Frame-based lock delay (replaces the old blocking delay_ms(1000))
+    engine->wait_counter--;
+    if (engine->wait_counter <= 0) {
+      spawn_piece(engine);
+      // Check if the new piece spawns inside existing blocks (game over)
+      if (physics_get(engine, engine->active_piece.x, engine->active_piece.y,
+                      engine->active_piece.rotation) != 0) {
+        engine->current_state = game_over;
+      } else {
+        engine->gravity_counter = 0;
+        engine->current_state = block_fall;
+      }
+    }
     break;
 
   case game_over:
-    printf("Play again? y/N: ");
-    char return_key;
-    scanf(" %c", &return_key);
-    if (!(return_key == 'y' || return_key == 'Y')) {
-      return 1;
-    }
-    engine->current_state = game_start;
-    return 0;
+    // Non-blocking: display is handled by render(), input by main loop
     break;
   }
   return 0;
 }
 
 void guide(void) {
+  printf("\033[2J\033[H");
   printf(
       "blocks are falling from the sky!\n"
       "perform wizardry and form horizontal lines that make them disappear.\n"
       "if the stack reaches the top of the screen, it's over.\n\n"
+      "controls:\n"
+      "  a - move left\n"
+      "  d - move right\n"
+      "  s - soft drop\n"
+      "  w - rotate\n\n"
       "press Enter to return: ");
   char return_key;
   scanf(" %c", &return_key);
 }
 
 void about(void) {
+  printf("\033[2J\033[H");
   printf("spacetetris. a spaceadler production.\n\n"
-         "made from to bridge the gap to RTOS/embedded programming.\n"
+         "made from scratch to bridge the gap to RTOS/embedded programming.\n"
          "read the code here: https://github.com/spaceadler/spacetetris\n\n"
          "press Enter to return: ");
   char return_key;
@@ -140,33 +162,35 @@ void about(void) {
 }
 
 int8_t call_menu(tetris_engine_t *engine) {
+  printf("\033[2J\033[H");
   printf("Welcome to spacetetris!\n"
          "Please select one of the following options:\n\n"
-         "1. New Game\n2. Guide\n3. About\n4. Exit\n");
-  int8_t selection = 0;
-  scanf(" %s", &selection);
+         "1. New Game\n2. Guide\n3. About\n4. Exit\n\n"
+         "Selection: ");
+
+  char selection;
+  scanf(" %c", &selection);
 
   switch (selection) {
-  case 1:
+  case '1':
     engine->current_state = game_start;
     break;
 
-  case 2:
+  case '2':
     guide();
     break;
 
-  case 3:
+  case '3':
     about();
     break;
 
-  case 4:
-    printf("Thanks for playing spacetetris! quitting...");
+  case '4':
+    printf("Thanks for playing spacetetris! quitting...\n");
     return 1;
-    break;
 
   default:
-    printf("Unkown value, quitting...");
-    return 1;
+    printf("\nUnknown option. Please try again.\n");
+    delay_ms(1500);
     break;
   }
   return 0;
@@ -179,7 +203,7 @@ void shuffle_bag(tetris_engine_t *engine) {
     engine->bag[i] = i;
   } // [0, 1, 2, 3, 4, 5, 6]
 
-  for (int i = 6; i > -1; i--) {
+  for (int8_t i = 6; i > 0; i--) {
     int8_t seed = rand() % (i + 1);
 
     temp = engine->bag[i];
@@ -204,17 +228,6 @@ void spawn_piece(tetris_engine_t *engine) {
 int8_t physics_get(tetris_engine_t *engine, int8_t test_x, int8_t test_y,
                    int8_t test_rotation) {
 
-  // basically we want to check the 4x4 array for the current piece, log the
-  // [row][col] positions for them, and check if the [x][y+1] IN THE GRID is 0
-  // or 1. if y already equals 19 then just return 1 and put state to block_stop
-  // (in the state, not here) (note, this is a loop for every x to check the y+1
-  // for it.) if zero for all of the values, then set engine->active_piece.y++,
-  // and return 0. else, return 1 and put state to block_stop.
-
-  // to do the function i want to do a loop x from 0 to 3 and y from 0 to 3
-  // if any of the cell values is != 0, check if grid[x][current y++] == 1.
-  // and also if current y++ is > the amount of rows. then return 1
-
   shape_type_t shape = engine->active_piece.shape_type;
 
   for (int8_t row = 0; row < 4; row++) {
@@ -228,7 +241,7 @@ int8_t physics_get(tetris_engine_t *engine, int8_t test_x, int8_t test_y,
           return 1;
         }
         // 2. Frozen Block Check (Only check if y >= 0 so we don't check above
-        // screen)
+        //    screen)
         if (board_y >= 0 && engine->grid[board_y][board_x] != 0) {
           return 1;
         }
@@ -249,7 +262,11 @@ void physics_set(tetris_engine_t *engine) {
       if (SHAPE_TABLE[shape][rotation][row][col] != 0) {
         int8_t board_x = px + col;
         int8_t board_y = py + row;
-        engine->grid[board_y][board_x] = 1;
+        // Bounds check: don't write above the board (would corrupt memory)
+        if (board_y >= 0 && board_y < TETRIS_ROWS && board_x >= 0 &&
+            board_x < TETRIS_COLS) {
+          engine->grid[board_y][board_x] = 1;
+        }
       }
     }
   }
@@ -283,10 +300,25 @@ int8_t line_checker(tetris_engine_t *engine) {
     }
   }
 
-  // 2. UPDATE THE SCORE
+  // UPDATE THE SCORE (classic Tetris scoring)
+  switch (lines_cleared_now) {
+  case 1:
+    engine->score += 100;
+    break;
+  case 2:
+    engine->score += 300;
+    break;
+  case 3:
+    engine->score += 500;
+    break;
+  case 4:
+    engine->score += 800;
+    break;
+  }
+
   engine->lines_cleared += lines_cleared_now;
 
-  // 3. CHECK GAME OVER
+  // CHECK GAME OVER (blocks in top row after clearing)
   for (int8_t col = 0; col < TETRIS_COLS; col++) {
     if (engine->grid[0][col] != 0) {
       return 1;
