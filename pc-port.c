@@ -157,7 +157,7 @@ char get_raw_keypress() {
 
 #else
   // FLIPPER ZERO / EMBEDDED
-  // We do not put Flipper code here. (See note below!)
+  // not yet
   return '\0';
 #endif
 }
