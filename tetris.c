@@ -103,7 +103,7 @@ int8_t call_menu(tetris_engine_t *engine) {
          "Please select one of the following options:\n\n"
          "1. New Game\n2. Guide\n3. About\n4. Exit\n");
   int8_t selection = 0;
-  scanf(" %i", &selection);
+  scanf(" %s", &selection);
 
   switch (selection) {
   case 1:
