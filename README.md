@@ -17,7 +17,7 @@ The main objective is to learn strict memory management, deterministic state mac
 ```
 ┌──────────────────────────────────────────────────┐
 │                    main.c                        │
-│           (Platform-Specific I/O Port)           │
+│           (Platform-Specific I/O Port)            │
 │                                                  │
 │  get_raw_keypress()  render()  delay_ms()        │
 │  ┌──────────┐  ┌──────────────┐  ┌───────────┐   │
@@ -32,7 +32,7 @@ The main objective is to learn strict memory management, deterministic state mac
 │          (Hardware-Agnostic Engine)              │
 │                                                  │
 │  state_machine()   physics_get()   line_checker()│
-│  spawn_piece()     physics_set()   shuffle_bag() │
+│  spawn_piece()     physics_set()   shuffle_bag()  │
 └──────────────────────────────────────────────────┘
 ```
 
