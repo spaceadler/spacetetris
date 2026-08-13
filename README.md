@@ -12,6 +12,8 @@ A from-scratch Tetris engine I made with strict separation between the hardware-
 
 The main objective is to learn strict memory management, deterministic state machine architecture, and hardware abstractions in a bare-metal-style C environment used in embedded firmware.
 
+> Upcoming Roadmap: The upcoming version of `spacetetris` will be a spacecraft-compliant engine that will adhere to the MISRA C:2012 and the NASA JPL Power of 10 coding guidelines. I'm actively comparing and refactoring the current codebase against the [REFACTOR-GOALS.md](REFACTOR-GOALS.md) audit.
+
 ## Architecture
 
 ```
