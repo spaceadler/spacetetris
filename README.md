@@ -1,6 +1,6 @@
 # spacetetris
 
-> A from-scratch Tetris engine written in C that is fully MISRA C:2012 and JPL Power of 10 compliant. Builtas a practical bridge from VHDL hardware design to low-level embedded systems and RTOS development.
+> A from-scratch Tetris engine written in C that is fully MISRA C:2012 and JPL Power of 10 compliant. Built as a practical bridge from VHDL hardware design to low-level embedded systems and RTOS development.
 
 ![Language](https://img.shields.io/badge/Language-Embedded%20C-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20RTOS-green)
