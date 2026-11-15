@@ -1,6 +1,6 @@
 # spacetetris
 
-> A custom-built Tetris engine written in C. Designed as a practical bridge from VHDL hardware design to low-level embedded systems and RTOS development.
+> A from-scratch Tetris engine written in C that is fully MISRA C:2012 and JPL Power of 10 compliant. Builtas a practical bridge from VHDL hardware design to low-level embedded systems and RTOS development.
 
 ![Language](https://img.shields.io/badge/Language-Embedded%20C-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20RTOS-green)
@@ -8,11 +8,8 @@
 
 ## Overview
 
-A from-scratch Tetris engine I made with strict separation between the hardware-agnostic game logic and the platform-specific I/O layer. 
 
-The main objective is to learn strict memory management, deterministic state machine architecture, and hardware abstractions in a bare-metal-style C environment used in embedded firmware.
-
-> v2: `spacetetris` is being refactored into a spacecraft-compliant engine that adheres to the MISRA C:2012 and NASA JPL Power of 10 coding guidelines, following the [REFACTOR-GOALS.md](REFACTOR-GOALS.md) audit. What was checked, with which tools, and what's still open is recorded in [COMPLIANCE.md](COMPLIANCE.md).
+The main objective for me with this project was to learn strict memory management, deterministic state machine architecture, and HAL's in a baremetal style C environment, much like those used in flight systems.
 
 ## Architecture
 
@@ -42,11 +39,11 @@ The main objective is to learn strict memory management, deterministic state mac
 
 The codebase is split into an engine, a platform interface with one implementation per platform, a loop that drives them, and the check handler they all share:
 
-- **`tetris.h` / `tetris.c`** These form the core engine. They contain the master state machine, 2D collision detection, the line-clearing system, and 7-bag piece randomizer. It operates purely on memory arrays and never decides how anything looks: when it needs a screen, it names one (`io_show(IO_SCREEN_GUIDE)`) and the port draws it. A compile-time check stops the build unless there are exactly 7 shapes.
-- **`prng.h` / `prng.c`** A xorshift32 random number generator, so the same seed deals the same pieces on every platform (`rand()` doesn't promise that, and MISRA bans it).
-- **`io.h`** The platform interface: keyboard, rendering, timing, seeding and screens, declared once. The engine says *what* happens; each port decides *how* it looks. **`io_unix.c`** (`<termios.h>`), **`io_windows.c`** (`<conio.h>`) and **`io_rtos.c`** (an embedded stub with a TODO per function) each implement all of it, and the build picks one by which file it compiles. That's link-time selection: no `#ifdef` anywhere in the `.c` files.
-- **`main.c`** A cyclic executive: a power-on self-test, then a counted loop with a hard 10-hour bound that reads a key, advances the state machine one step, verifies the engine's checksums, renders, and waits out the frame. No platform headers.
-- **`assert_handler.h` / `assert_handler.c`** `TETRIS_ASSERT(cond)`, the project's check. It is true when `cond` holds, so the code around it can recover when it doesn't (a cell that can't be looked up reads as solid, a move that can't be checked as blocked). A failed check never aborts: it latches a fault, and `main.c` stops the game at the end of that tick in **safe mode**, reports where the first failed check sits (`check failed at <file>:<line>`), and exits with status 1.
+- **`tetris.h` / `tetris.c`** These form the core engine, containing the master state machine, collision detection, line-clearing, and 7-bag piece randomizer. It operates purely on memory arrays.
+- **`prng.h` / `prng.c`** A xorshift32 random number generator. Main reason is because MISRA bans `rand()`.
+- **`io.h`** The platform interface: keyboard, rendering, timing, seeding and screens. The engine says *what* happens; each port decides *how* it looks.
+- **`main.c`** The organizer, it does a power-on self-test, then a counted loop with a hard 10-hour bound that reads a key, advances the state machine one step, verifies the engine's checksums, renders, and waits out the frame.
+- **`assert_handler.h` / `assert_handler.c`** `TETRIS_ASSERT(cond)`, the project's checkers. It is true when `cond` holds, so the code around it can recover when it doesn't. A failed check latches a fault and `main.c` stops the game at the end of that tick in **safe mode**, reports where the first failed check sits (`check failed at <file>:<line>`), and exits with status 1.
 - **`char_t.h`** `char_t`, plain `char` under a name: the one place the code spells out a basic C type (MISRA Dir 4.6, JPL rule 17).
 
 ## State Machine
@@ -117,7 +114,7 @@ tools/check.sh            # everything, about 5 minutes on a Raspberry Pi
 tools/check.sh --quick    # skips the ~40 s game played in a real terminal
 ```
 
-One script compiles every configuration with both compilers, runs both static analyzers, the MISRA C:2012 checks (cppcheck) and the Power of 10 checks (Cobra and `tools/`), replays the original v1 engine against this one tick by tick, plants faults to prove every checker can fail, and plays the real game through a pseudo-terminal. It exits non-zero on any finding that isn't a reviewed one in [COMPLIANCE.md](COMPLIANCE.md). [REFACTOR-REPORT.md](REFACTOR-REPORT.md) walks through every change from v1, before and after.
+The script compiles every configuration with both compilers, runs both static analyzers, the MISRA C:2012 checks (cppcheck) and the Power of 10 checks (Cobra and `tools/`), replays the original v1 engine against this one tick by tick, plants faults to prove every checker can fail, and plays the real game through a pseudo-terminal. It exits non-zero on any finding that isn't a reviewed one in [COMPLIANCE.md](COMPLIANCE.md). [REFACTOR-REPORT.md](REFACTOR-REPORT.md) walks through every change from v1, before and after.
 
 ---
 *powered by logic, coffee, and many sleepless nights*
