@@ -1,0 +1,29 @@
+# Power of 10 rule 5, measured the way its author's own checker measures it.
+#
+# this is the formula from Cobra's rules/main/p10.def (def P10_5, Gerard
+# Holzmann, github.com/nimble-code/Cobra) with one change: the token it
+# counts. the stock rule counts tokens spelled `assert`; this project's
+# assertion is TETRIS_ASSERT (assert_handler.h), which the stock rule can't
+# see. statements are counted as ';' tokens, exactly as in the stock rule.
+#
+# the rule: fewer than one assertion per 50 statements fails (checked once
+# there are more than 50 statements).
+#
+# usage: cobra -f tools/p10_rule5.cobra <files>   (prints "rule 5: PASS ...")
+
+r; m TETRIS_ASSERT
+>1
+r; m \;
+>2
+%{
+	if (50*marks(1) < marks(2))
+	{	if (marks(2) > 50)
+		{	print "rule 5: FAIL, " marks(1) " assertions for " marks(2) " statements; it should be > " marks(2)/50 - 1 "\n";
+		} else
+		{	print "rule 5: PASS, " marks(1) " assertions for " marks(2) " statements (50 or fewer)\n";
+		}
+	} else
+	{	print "rule 5: PASS, " marks(1) " assertions for " marks(2) " statements; it should be > " marks(2)/50 - 1 "\n";
+	}
+	Stop;
+%}

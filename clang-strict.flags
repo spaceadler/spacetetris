@@ -1,0 +1,8 @@
+-std=c99
+-pedantic-errors
+-Werror
+-O2
+-Weverything
+-Wno-covered-switch-default
+-Wno-declaration-after-statement
+-Wno-padded
