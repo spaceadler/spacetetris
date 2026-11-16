@@ -1,6 +1,6 @@
 # MISRA C:2012 & JPL Power of 10 Compliance Analysis (v2)
 
-> Full rule-by-rule audit against the published standards. Every violation cites the specific rule.
+> Full rule-by-rule audit against the published standards. Every violation cites the specific rule. Line links point at the code this audit was written against: v1, commit `033d184`.
 
 ---
 
@@ -48,8 +48,8 @@ A static analysis tool must be able to **prove** termination. `while(1)` fails t
 
 | Location | Violation | Fix |
 |---|---|---|
-| [main.c:16](file:///home/adler/dev/spacetetris/main.c#L16) `while (1)` | Unbounded game loop | **Bounded cyclic executive** (see §4 below) |
-| [main.c:53](file:///home/adler/dev/spacetetris/main.c#L53) `while ((clock() - start_time) < target_ticks)` | Unbounded busy-wait spin | Add `uint32_t guard` counter with `MAX_SPIN_ITERATIONS` upper bound |
+| [main.c:16](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L16) `while (1)` | Unbounded game loop | **Bounded cyclic executive** (see §4 below) |
+| [main.c:53](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L53) `while ((clock() - start_time) < target_ticks)` | Unbounded busy-wait spin | Add `uint32_t guard` counter with `MAX_SPIN_ITERATIONS` upper bound |
 
 #### Bounded Cyclic Executive Pattern
 
@@ -96,8 +96,8 @@ void delay_ms(int16_t milliseconds) {
 
 | Function | Lines | Status | Fix |
 |---|---|---|---|
-| [state_machine](file:///home/adler/dev/spacetetris/tetris.c#L62-L136) | 74 | ❌ Over | Split into `static` per-state handlers |
-| [render](file:///home/adler/dev/spacetetris/main.c#L90-L150) | 60 | ⚠️ Borderline | Moves to `io_unix.c`, split into `render_board()` + `render_hud()` |
+| [state_machine](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L62-L136) | 74 | ❌ Over | Split into `static` per-state handlers |
+| [render](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L90-L150) | 60 | ⚠️ Borderline | Moves to `io_unix.c`, split into `render_board()` + `render_hud()` |
 | All others | <40 | ✅ OK | — |
 
 **Split pattern for state_machine:**
@@ -185,8 +185,8 @@ assert(engine->score >= 0);
 
 | Location | Issue | Fix |
 |---|---|---|
-| [tetris.c:200](file:///home/adler/dev/spacetetris/tetris.c#L200) `int8_t temp = 0;` | Declared outside the `for` body where it's used | Move inside `for` body |
-| [main.c:60-62](file:///home/adler/dev/spacetetris/main.c#L60-L62) `test_x`, `test_y`, `test_rot` | Already at correct scope | ✅ OK |
+| [tetris.c:200](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L200) `int8_t temp = 0;` | Declared outside the `for` body where it's used | Move inside `for` body |
+| [main.c:60-62](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L60-L62) `test_x`, `test_y`, `test_rot` | Already at correct scope | ✅ OK |
 
 ---
 
@@ -196,14 +196,14 @@ assert(engine->score >= 0);
 
 | Location | Unchecked Call | MISRA Rule |
 |---|---|---|
-| [tetris.c:151](file:///home/adler/dev/spacetetris/tetris.c#L151) `scanf(...)` | Return ignored | 17.7 |
-| [tetris.c:161](file:///home/adler/dev/spacetetris/tetris.c#L161) `scanf(...)` | Return ignored | 17.7 |
-| [tetris.c:172](file:///home/adler/dev/spacetetris/tetris.c#L172) `scanf(...)` | Return ignored | 17.7 |
-| [main.c:94-148](file:///home/adler/dev/spacetetris/main.c#L94-L148) all `printf(...)` | Return ignored | 17.7 |
-| [main.c:166](file:///home/adler/dev/spacetetris/main.c#L166) `tcgetattr(...)` | Return ignored | 17.7 |
-| [main.c:169](file:///home/adler/dev/spacetetris/main.c#L169) `tcsetattr(...)` | Return ignored | 17.7 |
-| [main.c:171-172](file:///home/adler/dev/spacetetris/main.c#L171-L172) `fcntl(...)` | Return ignored | 17.7 |
-| [main.c:176](file:///home/adler/dev/spacetetris/main.c#L176) `tcsetattr(...)` | Return ignored | 17.7 |
+| [tetris.c:151](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L151) `scanf(...)` | Return ignored | 17.7 |
+| [tetris.c:161](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L161) `scanf(...)` | Return ignored | 17.7 |
+| [tetris.c:172](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L172) `scanf(...)` | Return ignored | 17.7 |
+| [main.c:94-148](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L94-L148) all `printf(...)` | Return ignored | 17.7 |
+| [main.c:166](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L166) `tcgetattr(...)` | Return ignored | 17.7 |
+| [main.c:169](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L169) `tcsetattr(...)` | Return ignored | 17.7 |
+| [main.c:171-172](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L171-L172) `fcntl(...)` | Return ignored | 17.7 |
+| [main.c:176](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L176) `tcsetattr(...)` | Return ignored | 17.7 |
 
 **Fix:** Either check and handle, or explicitly cast to `(void)` with a comment:
 ```c
@@ -218,8 +218,8 @@ assert(engine->score >= 0);
 
 | Location | Issue | Fix |
 |---|---|---|
-| [main.c:3-9](file:///home/adler/dev/spacetetris/main.c#L3-L9) `#ifdef _WIN32` / `#elif __linux__` | Conditional compilation selecting platform code | **Eliminated** by splitting into `io_unix.c` / `io_windows.c` |
-| [tetris.h:15-16](file:///home/adler/dev/spacetetris/tetris.h#L15-L16) `#define LOCK_DELAY_FRAMES` multi-line | Uses `\` line continuation | Acceptable if it's a simple constant, but could use `enum` or `static const` instead |
+| [main.c:3-9](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L3-L9) `#ifdef _WIN32` / `#elif __linux__` | Conditional compilation selecting platform code | **Eliminated** by splitting into `io_unix.c` / `io_windows.c` |
+| [tetris.h:15-16](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.h#L15-L16) `#define LOCK_DELAY_FRAMES` multi-line | Uses `\` line continuation | Acceptable if it's a simple constant, but could use `enum` or `static const` instead |
 
 After the I/O split: **zero `#ifdef` blocks remain in any `.c` file**. Only include guards in `.h` files.
 
@@ -285,11 +285,11 @@ This is a **major violation area**. MISRA's essential type model requires explic
 
 | Rule | Location | Violation | Fix |
 |---|---|---|---|
-| **10.1** Inappropriate operand type | [tetris.c:207](file:///home/adler/dev/spacetetris/tetris.c#L207) `rand() % (i + 1)` | `rand()` returns `int`, used in modulo with `int8_t` | Replace with `prng_next()` returning `uint32_t`, use explicit casts |
-| **10.3** Narrowing assignment | [tetris.c:207](file:///home/adler/dev/spacetetris/tetris.c#L207) `int8_t seed = rand() % (i + 1)` | `int` → `int8_t` narrowing without cast | `int8_t seed = (int8_t)(prng_next(&prng) % (uint32_t)(i + 1));` |
-| **10.3** Narrowing assignment | [tetris.c:221](file:///home/adler/dev/spacetetris/tetris.c#L221) `engine->active_piece.shape_type = engine->bag[engine->bag_index]` | Enum category mismatch possible | Add explicit cast to `(shape_type_t)` |
-| **10.4** Mixed arithmetic | [main.c:50](file:///home/adler/dev/spacetetris/main.c#L50) `(milliseconds * CLOCKS_PER_SEC) / 1000` | `int16_t × clock_t` — mixed signed widths | Explicit cast: `(clock_t)milliseconds * CLOCKS_PER_SEC` — but `clock()` is banned anyway (Rule 21.10) |
-| **10.4** Mixed arithmetic | [tetris.c:84-88](file:///home/adler/dev/spacetetris/tetris.c#L84-L88) comparisons | `int16_t` compared against `#define` (which is `int`) | Use typed constants or explicit casts |
+| **10.1** Inappropriate operand type | [tetris.c:207](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L207) `rand() % (i + 1)` | `rand()` returns `int`, used in modulo with `int8_t` | Replace with `prng_next()` returning `uint32_t`, use explicit casts |
+| **10.3** Narrowing assignment | [tetris.c:207](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L207) `int8_t seed = rand() % (i + 1)` | `int` → `int8_t` narrowing without cast | `int8_t seed = (int8_t)(prng_next(&prng) % (uint32_t)(i + 1));` |
+| **10.3** Narrowing assignment | [tetris.c:221](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L221) `engine->active_piece.shape_type = engine->bag[engine->bag_index]` | Enum category mismatch possible | Add explicit cast to `(shape_type_t)` |
+| **10.4** Mixed arithmetic | [main.c:50](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L50) `(milliseconds * CLOCKS_PER_SEC) / 1000` | `int16_t × clock_t` — mixed signed widths | Explicit cast: `(clock_t)milliseconds * CLOCKS_PER_SEC` — but `clock()` is banned anyway (Rule 21.10) |
+| **10.4** Mixed arithmetic | [tetris.c:84-88](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L84-L88) comparisons | `int16_t` compared against `#define` (which is `int`) | Use typed constants or explicit casts |
 | **10.6** Composite to wider | Various loop counters | `int8_t i` used in expressions that promote to `int` | Use `int8_t` consistently with explicit casts on results |
 
 > [!IMPORTANT]
@@ -301,8 +301,8 @@ This is a **major violation area**. MISRA's essential type model requires explic
 
 | Rule | Location | Violation |
 |---|---|---|
-| 12.1 Make precedence explicit | [main.c:168](file:///home/adler/dev/spacetetris/main.c#L168) `newt.c_lflag &= ~(ICANON \| ECHO)` | ✅ Parenthesized correctly |
-| 12.1 Make precedence explicit | [tetris.c:87-89](file:///home/adler/dev/spacetetris/tetris.c#L87-L89) compound conditions | Add explicit parentheses around sub-expressions for clarity |
+| 12.1 Make precedence explicit | [main.c:168](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L168) `newt.c_lflag &= ~(ICANON \| ECHO)` | ✅ Parenthesized correctly |
+| 12.1 Make precedence explicit | [tetris.c:87-89](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L87-L89) compound conditions | Add explicit parentheses around sub-expressions for clarity |
 
 ---
 
@@ -321,7 +321,7 @@ This is a **major violation area**. MISRA's essential type model requires explic
 | Rule | Location | Violation | Fix |
 |---|---|---|---|
 | **15.1** No `goto` | — | ✅ Compliant | — |
-| **15.4** Max one `break` per loop | [line_checker](file:///home/adler/dev/spacetetris/tetris.c#L275-L301) inner loop | `break` at L282 is the only one per loop | ✅ OK |
+| **15.4** Max one `break` per loop | [line_checker](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L275-L301) inner loop | `break` at L282 is the only one per loop | ✅ OK |
 | **15.5** Single exit per function | Multiple functions | ❌ See table below | Use result variable pattern |
 | **15.7** `if...else if` terminated with `else` | Not applicable | ✅ | — |
 
@@ -329,12 +329,12 @@ This is a **major violation area**. MISRA's essential type model requires explic
 
 | Function | Return Points | Fix |
 |---|---|---|
-| [state_machine](file:///home/adler/dev/spacetetris/tetris.c#L62-L136) | L67, L135 | Single `result` variable |
-| [call_menu](file:///home/adler/dev/spacetetris/tetris.c#L164-L197) | L189, L196 | Single `result` variable |
-| [physics_get](file:///home/adler/dev/spacetetris/tetris.c#L228-L252) | L241, L246, L251 | Single `result` variable |
-| [line_checker](file:///home/adler/dev/spacetetris/tetris.c#L275-L329) | L324, L328 | Single `result` variable |
-| [get_raw_keypress](file:///home/adler/dev/spacetetris/main.c#L152-L187) | L157, L158, L180, L181, L185 | Single `result` variable |
-| [input](file:///home/adler/dev/spacetetris/main.c#L58-L88) | L79 | Single `result` variable or remove early return |
+| [state_machine](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L62-L136) | L67, L135 | Single `result` variable |
+| [call_menu](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L164-L197) | L189, L196 | Single `result` variable |
+| [physics_get](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L228-L252) | L241, L246, L251 | Single `result` variable |
+| [line_checker](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L275-L329) | L324, L328 | Single `result` variable |
+| [get_raw_keypress](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L152-L187) | L157, L158, L180, L181, L185 | Single `result` variable |
+| [input](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L58-L88) | L79 | Single `result` variable or remove early return |
 
 **Pattern:**
 ```c
@@ -365,9 +365,9 @@ int8_t physics_get(tetris_engine_t *engine, int8_t test_x, int8_t test_y,
 | Rule | Location | Violation | Fix |
 |---|---|---|---|
 | **16.3** Every case ends with `break` | All switches | ✅ All cases have `break` or `return` | After 15.5 fix, all will have `break` |
-| **16.4** Every switch has `default` | [tetris.c:63](file:///home/adler/dev/spacetetris/tetris.c#L63) `state_machine` switch | ❌ No `default` | Add `default: break;` |
-| **16.4** Every switch has `default` | [tetris.c:304](file:///home/adler/dev/spacetetris/tetris.c#L304) `line_checker` scoring switch | ❌ No `default` | Add `default: break;` |
-| **16.4** Every switch has `default` | [main.c:65](file:///home/adler/dev/spacetetris/main.c#L65) `input` switch | ✅ Has `default` | — |
+| **16.4** Every switch has `default` | [tetris.c:63](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L63) `state_machine` switch | ❌ No `default` | Add `default: break;` |
+| **16.4** Every switch has `default` | [tetris.c:304](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L304) `line_checker` scoring switch | ❌ No `default` | Add `default: break;` |
+| **16.4** Every switch has `default` | [main.c:65](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L65) `input` switch | ✅ Has `default` | — |
 | **16.6** Min 2 switch-clauses | All switches | ✅ All have ≥2 cases | — |
 
 ---
@@ -402,8 +402,8 @@ This is the section with the most severe violations.
 |---|---|---|---|
 | **21.3** `malloc`/`free` | Dynamic allocation | ✅ Not used | — |
 | **21.8** `abort`/`exit` | Program termination | ✅ Not used | — |
-| **21.10** `<time.h>` — **ENTIRE HEADER BANNED** | [tetris.h:8](file:///home/adler/dev/spacetetris/tetris.h#L8) `#include <time.h>` | ❌ Used for `srand(time(NULL))` and `clock()` in `delay_ms()` | **Remove entirely.** Seed PRNG from hardware timer or fixed seed. Move `delay_ms` to I/O layer using platform timer. |
-| **21.24** `rand`/`srand` — **BANNED** | [main.c:12](file:///home/adler/dev/spacetetris/main.c#L12) `srand(time(NULL))`, [tetris.c:207](file:///home/adler/dev/spacetetris/tetris.c#L207) `rand()` | ❌ Used for bag shuffling | **Replace with xorshift32 PRNG** (see §5 below) |
+| **21.10** `<time.h>` — **ENTIRE HEADER BANNED** | [tetris.h:8](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.h#L8) `#include <time.h>` | ❌ Used for `srand(time(NULL))` and `clock()` in `delay_ms()` | **Remove entirely.** Seed PRNG from hardware timer or fixed seed. Move `delay_ms` to I/O layer using platform timer. |
+| **21.24** `rand`/`srand` — **BANNED** | [main.c:12](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/main.c#L12) `srand(time(NULL))`, [tetris.c:207](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L207) `rand()` | ❌ Used for bag shuffling | **Replace with xorshift32 PRNG** (see §5 below) |
 
 > [!CAUTION]
 > `<time.h>` being banned means `clock()`, `time()`, `difftime()`, `localtime()` — all of it. Your `delay_ms()` currently depends on `clock()`. This function **must** live exclusively in the I/O layer (`io_unix.c` uses `clock()` or `nanosleep()`, `io_rtos.c` uses `vTaskDelay()`, etc.). The engine must never see `<time.h>`.
@@ -431,12 +431,12 @@ No `<stdio.h>`, no `<stdlib.h>`, no `<time.h>`.
 - Block drops **every tick** of the cyclic executive loop
 
 **Files affected:**
-- [tetris.h:14](file:///home/adler/dev/spacetetris/tetris.h#L14) — delete `GRAVITY_FRAMES`
-- [tetris.h:56](file:///home/adler/dev/spacetetris/tetris.h#L56) — delete `gravity_counter` from struct
-- [tetris.c:58](file:///home/adler/dev/spacetetris/tetris.c#L58) — delete `engine->gravity_counter = 0`
-- [tetris.c:77](file:///home/adler/dev/spacetetris/tetris.c#L77) — delete `engine->gravity_counter = 0`
-- [tetris.c:81-95](file:///home/adler/dev/spacetetris/tetris.c#L81-L95) — simplify `block_fall` to just try gravity every tick
-- [tetris.c:125](file:///home/adler/dev/spacetetris/tetris.c#L125) — delete `engine->gravity_counter = 0`
+- [tetris.h:14](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.h#L14) — delete `GRAVITY_FRAMES`
+- [tetris.h:56](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.h#L56) — delete `gravity_counter` from struct
+- [tetris.c:58](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L58) — delete `engine->gravity_counter = 0`
+- [tetris.c:77](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L77) — delete `engine->gravity_counter = 0`
+- [tetris.c:81-95](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L81-L95) — simplify `block_fall` to just try gravity every tick
+- [tetris.c:125](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c#L125) — delete `engine->gravity_counter = 0`
 
 **Simplified `block_fall`:**
 ```c
@@ -632,7 +632,7 @@ Functions that need checksum updates:
 
 ## 7. I/O Abstraction — Removing stdio from Engine
 
-### Current `stdio` calls in [tetris.c](file:///home/adler/dev/spacetetris/tetris.c)
+### Current `stdio` calls in [tetris.c](https://git.spaceadler.com/spaceadler/spacetetris/src/commit/033d184e5f29e5eb83589726f27fdaa6c1cb819a/tetris.c)
 
 | Line | Call | Where it goes |
 |---|---|---|
