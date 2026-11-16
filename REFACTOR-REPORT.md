@@ -1,6 +1,6 @@
 # Refactor Report: spacetetris v1 → v2
 
-> Every change between the original code (**v1**, commit `033d184`) and the refactored code (**v2**, the working tree as of 2026-11-15), shown before and after, with the rule each one serves. The numbers below are measured, not estimated: the same compilers, analyzers and checkers were run on both versions. Companion to [REFACTOR-GOALS.md](REFACTOR-GOALS.md) (the plan) and [COMPLIANCE.md](COMPLIANCE.md) (the evidence, deviations and gaps). `tools/check.sh` re-runs all of it.
+> Every change between the original code (**v1**, commit `033d184`) and the refactored code (**v2**, commit `3d60e22`, 2026-11-15), shown before and after, with the rule each one serves. The numbers below are measured, not estimated: the same compilers, analyzers and checkers were run on both versions. Companion to [REFACTOR-GOALS.md](REFACTOR-GOALS.md) (the plan) and [COMPLIANCE.md](COMPLIANCE.md) (the evidence, deviations and gaps). `tools/check.sh` re-runs all of it.
 
 ## 1. At a glance
 
