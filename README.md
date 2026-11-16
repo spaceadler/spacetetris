@@ -94,6 +94,7 @@ It covers both compilers, both static analyzers, MISRA (cppcheck), Power of 10 (
 | [REFACTOR-GOALS.md](REFACTOR-GOALS.md) | The spec: rule-by-rule audit of v1 |
 | [REFACTOR-REPORT.md](REFACTOR-REPORT.md) | Every v1 → v2 change, before and after |
 | [COMPLIANCE.md](COMPLIANCE.md) | The evidence: flags, tool results, deviations |
+| [CODEMAP.md](CODEMAP.md) | Files, hub functions and the call graph, generated from the code |
 
 ---
 *powered by logic, coffee, and many sleepless nights*
