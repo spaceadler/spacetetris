@@ -2,7 +2,7 @@
 
 ← [README](README.md)
 
-> Generated from commit `ca76fd5` by `scripts/codemap.py`. Regenerate it from the workspace root with `python3 scripts/codemap.py spacetetris`; don't edit it by hand.
+> Generated from commit `02fdaf2` by `scripts/codemap.py`. Regenerate it from the workspace root with `python3 scripts/codemap.py spacetetris`; don't edit it by hand.
 
 ## Files
 
@@ -11,8 +11,8 @@ Each box is a source file and its function count; an arrow means calls into that
 ```mermaid
 flowchart LR
     n_tetris_c["tetris.c · 23"]
-    n_io_unix_c["io_unix.c · 13"]
     n_io_windows_c["io_windows.c · 13"]
+    n_io_unix_c["io_unix.c · 13"]
     n_tools_trace_harness_c["tools/trace_harness.c · 11"]
     n_io_rtos_c["io_rtos.c · 8"]
     n_tools_check_sh["tools/check.sh · 8"]
@@ -20,8 +20,8 @@ flowchart LR
     n_tools_pty_game_test_py["tools/pty_game_test.py · 5"]
     n_main_c["main.c · 4"]
     n_assert_handler_c["assert_handler.c · 3"]
-    n_tools_p10_metrics_py["tools/p10_metrics.py · 2"]
     n_prng_c["prng.c · 2"]
+    n_tools_p10_metrics_py["tools/p10_metrics.py · 2"]
     n_assert_handler_h["assert_handler.h · 1"]
     n_assert_handler_h -->|1| n_assert_handler_c
     n_io_unix_c -->|1| n_tetris_c
@@ -56,11 +56,6 @@ The most connected functions: where a change reaches furthest.
 | `assert_fault_latched()` | `assert_handler.c:19` | 4 | 0 |
 | `compute_score_checksum()` | `tetris.c:614` | 3 | 1 |
 | `fresh()` | `tools/trace_harness.c:98` | 2 | 2 |
-| `io_render()` | `io_unix.c:114` | 0 | 4 |
-| `io_render()` | `io_windows.c:76` | 0 | 4 |
-| `scenario()` | `tools/trace_harness.c:109` | 1 | 3 |
-| `shape_cell()` | `tetris.c:301` | 4 | 0 |
-| `assert_first_fault()` | `assert_handler.c:21` | 3 | 0 |
 
 ```mermaid
 flowchart LR
@@ -79,17 +74,10 @@ flowchart LR
     n_assert_handler_assert_fault_latched["assert_fault_latched()"]
     n_tetris_compute_score_checksum["compute_score_checksum()"]
     n_tools_trace_harness_fresh["fresh()"]
-    n_io_unix_io_render["io_render()<br/>io_unix.c"]
-    n_io_windows_io_render["io_render()<br/>io_windows.c"]
-    n_tools_trace_harness_scenario["scenario()"]
-    n_tetris_shape_cell["shape_cell()"]
-    n_assert_handler_assert_first_fault["assert_first_fault()"]
     n_tools_trace_harness_main --> n_tools_trace_harness_fresh
-    n_tools_trace_harness_main --> n_tools_trace_harness_scenario
     n_tools_trace_harness_main --> n_tools_trace_harness_step
     n_tools_trace_harness_main --> n_tetris_verify_engine_integrity
     n_tools_trace_harness_main --> n_assert_handler_assert_fault_latched
-    n_tools_trace_harness_main --> n_assert_handler_assert_first_fault
     n_tools_trace_harness_main --> n_tetris_init
     n_tetris_init --> n_tetris_compute_grid_checksum
     n_tetris_init --> n_tetris_compute_score_checksum
@@ -99,21 +87,15 @@ flowchart LR
     n_main_main --> n_tetris_engine_self_test
     n_main_main --> n_tetris_init
     n_main_main --> n_assert_handler_assert_fault_latched
-    n_main_main --> n_assert_handler_assert_first_fault
-    n_tetris_physics_get --> n_tetris_shape_cell
     n_tools_trace_harness_step --> n_tetris_state_machine
     n_tools_trace_harness_step --> n_tetris_verify_engine_integrity
     n_tools_trace_harness_step --> n_assert_handler_assert_fault_latched
-    n_tools_trace_harness_step --> n_assert_handler_assert_first_fault
-    n_tetris_engine_self_test --> n_tetris_shape_cell
     n_main_run_tick --> n_assert_handler_assert_fault_latched
     n_main_run_tick --> n_tetris_state_machine
     n_main_run_tick --> n_tetris_verify_engine_integrity
     n_tetris_verify_engine_integrity --> n_tetris_compute_grid_checksum
     n_tetris_verify_engine_integrity --> n_tetris_compute_score_checksum
     n_tools_trace_harness_fresh --> n_tetris_init
-    n_tools_trace_harness_scenario --> n_tools_trace_harness_fresh
-    n_tools_trace_harness_scenario --> n_tools_trace_harness_step
 ```
 
 ## Functions
