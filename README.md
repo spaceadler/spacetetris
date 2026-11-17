@@ -37,7 +37,7 @@ The engine says *what* happens (`io_show(IO_SCREEN_GUIDE)`); the port decides *h
 ## One Tick
 
 ```mermaid
-flowchart LR
+flowchart TB
     key[io_get_keypress] --> sm[state_machine] --> v[verify CRCs] --> r[io_render] --> d[wait out frame]
     d --> key
     v -->|"check failed"| safe["safe mode:<br/>report file:line, exit 1"]
