@@ -1,14 +1,14 @@
 # spacetetris
 
-> A from-scratch Tetris engine in C, MISRA C:2012 and JPL Power of 10 compliant: the bridge from VHDL to embedded and RTOS work.
+> A from-scratch Tetris engine in C that follows MISRA C:2012 and the JPL Power of 10 rules, with four documented deviations.
 
-![Language](https://img.shields.io/badge/Language-Embedded%20C-blue)
-![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20RTOS-green)
+![Language](https://img.shields.io/badge/Language-C-blue)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20RTOS%20stub-green)
 ![Architecture](https://img.shields.io/badge/Architecture-Finite%20State%20Machine-orange)
 
 ## Overview
 
-Built to learn strict memory discipline, deterministic state machines and HALs in a bare-metal style, the way flight software is written. The engine is platform-free; one I/O port is linked in per target, with no `#ifdef` anywhere.
+Built to learn strict memory discipline, deterministic state machines and hardware abstraction in the style flight software uses. The engine is platform-free; one I/O port is linked in per target, with no `#ifdef` anywhere. The Linux port is the one that runs and is tested. The Windows port is syntax-checked only, and the RTOS port is a headless stub until a real RTOS port lands.
 
 ## Architecture
 
