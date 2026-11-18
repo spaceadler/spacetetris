@@ -23,16 +23,14 @@ flowchart TB
     unix["io_unix.c<br/>termios + ANSI"]
     win["io_windows.c<br/>conio.h"]
     rtos["io_rtos.c<br/>headless stub"]
-    assert["assert_handler.c<br/>TETRIS_ASSERT, safe mode"]
 
     main --> tetris & io
     tetris --> prng
     tetris -->|"io_show(screen)"| io
     io -.->|"one linked per build"| unix & win & rtos
-    tetris & main & io -.-> assert
 ```
 
-The engine says *what* happens (`io_show(IO_SCREEN_GUIDE)`); the port decides *how* it looks. Calls only ever go engine → port.
+The engine says *what* happens (`io_show(IO_SCREEN_GUIDE)`); the port decides *how* it looks. Calls only ever go engine → port. Every file reports a failed check through `TETRIS_ASSERT` in `assert_handler.c`, which stops the game in safe mode.
 
 ## One Tick
 
